@@ -105,6 +105,8 @@ export function ChatsView({ onStartCall }: { onStartCall: () => void }) {
 
         <ChatPanel
           title="Chat"
+          wide
+          showHeader={false}
           messages={messages}
           typing={typing}
           typingAuthor={active.name}
