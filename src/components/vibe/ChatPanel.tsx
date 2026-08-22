@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import type { ChatMessage } from "@/lib/vibe-data";
 import { MessageBubble, TypingIndicator } from "./MessageBubble";
+import { cn } from "@/lib/utils";
 
 export function ChatPanel({
   title,
@@ -9,12 +10,16 @@ export function ChatPanel({
   typing,
   typingAuthor,
   onSend,
+  wide = false,
+  showHeader = true,
 }: {
   title: string;
   messages: ChatMessage[];
   typing: boolean;
   typingAuthor: string;
   onSend: (text: string) => void;
+  wide?: boolean;
+  showHeader?: boolean;
 }) {
   const [draft, setDraft] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -31,11 +36,18 @@ export function ChatPanel({
   };
 
   return (
-    <aside className="flex w-80 shrink-0 flex-col border-l border-border bg-card/20">
-      <div className="flex items-center justify-between border-b border-border p-6">
-        <h2 className="font-display font-bold tracking-wide uppercase">{title}</h2>
-        <div className="size-2 animate-pulse rounded-full bg-accent" />
-      </div>
+    <aside
+      className={cn(
+        "flex flex-col border-l border-border bg-card/20",
+        wide ? "w-full" : "w-80",
+      )}
+    >
+      {showHeader && (
+        <div className="flex items-center justify-between border-b border-border p-6">
+          <h2 className="font-display font-bold tracking-wide uppercase">{title}</h2>
+          <div className="size-2 animate-pulse rounded-full bg-accent" />
+        </div>
+      )}
 
       <div ref={scrollRef} className="flex-1 space-y-6 overflow-y-auto p-6">
         {messages.map((m) => (
