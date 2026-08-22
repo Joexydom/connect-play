@@ -47,7 +47,8 @@ export function useChatSimulation(
       timeoutRef.current = window.setTimeout(
         () => {
           setTyping(false);
-          const reply = replies[Math.floor(Math.random() * replies.length)];
+          const reply =
+            replies[Math.floor(Math.random() * replies.length)] ?? "👍";
           setMessages((m) => [
             ...m,
             {
