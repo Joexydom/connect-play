@@ -61,7 +61,7 @@ export function useProfile(user: User | undefined) {
             display_name: displayName,
             username,
             avatar_url: metadataString(user, "avatar_url") || null,
-            avatar_color: pickColor(user.id),
+            avatar_color: pickColor(user.id) ?? "#7C5CFF",
           },
           { onConflict: "id" },
         )
