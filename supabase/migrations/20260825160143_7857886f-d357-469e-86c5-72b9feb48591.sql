@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.notify_room_on_message() FROM PUBLIC, anon, authenticated;
