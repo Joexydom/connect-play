@@ -87,7 +87,7 @@ function VibeHome() {
         </>
       )}
 
-      {view === "chats" && <ChatsView onStartCall={startCall} />}
+      {view === "chats" && <ChatsView onStartCall={startCall} userId={session.user.id} />}
 
       {view === "calls" && (
         <CallView
