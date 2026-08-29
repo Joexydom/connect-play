@@ -85,7 +85,7 @@ export function ChatPanel({
         </div>
       )}
 
-      <div ref={scrollRef} className="flex-1 space-y-6 overflow-y-auto p-6">
+      <div ref={scrollRef} className="min-h-0 flex-1 space-y-6 overflow-y-auto p-6">
         {messages.map((m) => (
           <MessageBubble key={m.id} message={m} />
         ))}
