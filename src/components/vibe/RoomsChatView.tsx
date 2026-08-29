@@ -49,7 +49,7 @@ export function RoomsChatView({
         </div>
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <div className="flex h-16 items-center justify-between border-b border-border/50 px-8">
           <div>
             <div className="font-bold">{active ? `#${active.name}` : "Loading…"}</div>
@@ -75,15 +75,17 @@ export function RoomsChatView({
           </div>
         </div>
 
-        <ChatPanel
-          title="Chat"
-          wide
-          showHeader={false}
-          messages={messages}
-          typing={false}
-          typingAuthor=""
-          onSend={(t) => void send(t)}
-        />
+        <div className="min-h-0 flex-1">
+          <ChatPanel
+            title="Chat"
+            wide
+            showHeader={false}
+            messages={messages}
+            typing={false}
+            typingAuthor=""
+            onSend={(t) => void send(t)}
+          />
+        </div>
       </div>
     </>
   );
