@@ -74,7 +74,7 @@ export function ChatPanel({
   return (
     <aside
       className={cn(
-        "flex flex-col border-l border-border bg-card/20",
+        "flex h-full min-h-0 flex-col border-l border-border bg-card/20",
         wide ? "w-full" : "w-80",
       )}
     >
