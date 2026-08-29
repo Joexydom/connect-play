@@ -2,12 +2,15 @@ import { createFileRoute, useNavigate, useRouteContext } from "@tanstack/react-r
 import { useState } from "react";
 import { AppSidebar, type View } from "@/components/vibe/AppSidebar";
 import { WatchView } from "@/components/vibe/WatchView";
-import { ChatsView } from "@/components/vibe/ChatsView";
+import { RoomsChatView } from "@/components/vibe/RoomsChatView";
+import { PlaylistsView } from "@/components/vibe/PlaylistsView";
 import { CallView } from "@/components/vibe/CallView";
 import { ChatPanel } from "@/components/vibe/ChatPanel";
+import { NotificationsPanel } from "@/components/vibe/NotificationsPanel";
 import { liveChatMessages, liveChatReplies, liveChatReplier } from "@/lib/vibe-data";
 import { useChatSimulation } from "@/lib/use-chat-simulation";
 import { useProfile } from "@/hooks/use-profile";
+import { useNotifications } from "@/hooks/use-notifications";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -48,10 +51,12 @@ function VibeHome() {
   const profile = useProfile(session.user);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const notifications = useNotifications(session.user.id);
 
   const [view, setView] = useState<View>("watch");
   const [theater, setTheater] = useState(false);
   const [inCall, setInCall] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   const startCall = () => {
     setView("calls");
@@ -66,13 +71,16 @@ function VibeHome() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background text-foreground font-sans">
+    <div className="relative flex h-screen overflow-hidden bg-background text-foreground font-sans">
       {!theater && (
         <AppSidebar
           active={view}
           onChange={setView}
           user={profile}
           onSignOut={handleSignOut}
+          unread={notifications.unread}
+          notificationsOpen={notificationsOpen}
+          onToggleNotifications={() => setNotificationsOpen((o) => !o)}
         />
       )}
 
@@ -87,13 +95,27 @@ function VibeHome() {
         </>
       )}
 
-      {view === "chats" && <ChatsView onStartCall={startCall} />}
+      {view === "chats" && (
+        <RoomsChatView userId={session.user.id} onStartCall={startCall} />
+      )}
+
+      {view === "playlists" && <PlaylistsView userId={session.user.id} />}
 
       {view === "calls" && (
         <CallView
           inCall={inCall}
           onStart={() => setInCall(true)}
           onEnd={() => setInCall(false)}
+        />
+      )}
+
+      {notificationsOpen && !theater && (
+        <NotificationsPanel
+          items={notifications.items}
+          unread={notifications.unread}
+          onMarkAllRead={notifications.markAllRead}
+          onDismiss={notifications.dismiss}
+          onClose={() => setNotificationsOpen(false)}
         />
       )}
     </div>
