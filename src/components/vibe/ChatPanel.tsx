@@ -140,27 +140,44 @@ export function ChatPanel({
       <div className="p-6">
         <div ref={pickerRef} className="relative">
           {emojiOpen && (
-            <div className="absolute right-0 bottom-full z-50 mb-2 w-72 rounded-2xl border border-border bg-card/95 p-3 shadow-2xl backdrop-blur-xl">
-              {EMOJI_GROUPS.map((group) => (
-                <div key={group.label} className="mb-2 last:mb-0">
-                  <div className="mb-1 px-1 text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
-                    {group.label}
+            <div className="absolute right-0 bottom-full z-50 mb-2 max-h-80 w-72 overflow-y-auto rounded-2xl border border-border bg-card/95 p-3 shadow-2xl backdrop-blur-xl">
+              <div className="relative mb-2">
+                <Search className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  value={emojiQuery}
+                  onChange={(e) => setEmojiQuery(e.target.value)}
+                  type="text"
+                  placeholder="Search emoji"
+                  aria-label="Search emoji"
+                  className="w-full rounded-lg bg-secondary/60 py-2 pr-3 pl-8 text-xs outline-none placeholder:text-muted-foreground/60 focus:ring-1 focus:ring-primary"
+                />
+              </div>
+              {filteredGroups.length === 0 ? (
+                <p className="px-1 py-4 text-center text-xs text-muted-foreground">
+                  No emoji found.
+                </p>
+              ) : (
+                filteredGroups.map((group) => (
+                  <div key={group.label} className="mb-2 last:mb-0">
+                    <div className="mb-1 px-1 text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+                      {group.label}
+                    </div>
+                    <div className="grid grid-cols-8 gap-0.5">
+                      {group.emojis.map((emoji) => (
+                        <button
+                          key={emoji.e}
+                          type="button"
+                          aria-label={`Insert ${emoji.e}`}
+                          onClick={() => addEmoji(emoji.e)}
+                          className="cursor-pointer rounded-lg p-1 text-lg transition-colors hover:bg-secondary"
+                        >
+                          {emoji.e}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="grid grid-cols-8 gap-0.5">
-                    {group.emojis.map((emoji) => (
-                      <button
-                        key={emoji}
-                        type="button"
-                        aria-label={`Insert ${emoji}`}
-                        onClick={() => addEmoji(emoji)}
-                        className="cursor-pointer rounded-lg p-1 text-lg transition-colors hover:bg-secondary"
-                      >
-                        {emoji}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           )}
 
