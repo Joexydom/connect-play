@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { Smile } from "lucide-react";
+import { Search, Smile } from "lucide-react";
 import type { ChatMessage } from "@/lib/vibe-data";
 import { MessageBubble, TypingIndicator } from "./MessageBubble";
 import { cn } from "@/lib/utils";
@@ -84,6 +84,7 @@ export function ChatPanel({
 }) {
   const [draft, setDraft] = useState("");
   const [emojiOpen, setEmojiOpen] = useState(false);
+  const [emojiQuery, setEmojiQuery] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -109,7 +110,16 @@ export function ChatPanel({
     onSend(draft);
     setDraft("");
     setEmojiOpen(false);
+    setEmojiQuery("");
   };
+
+  const q = emojiQuery.trim().toLowerCase();
+  const filteredGroups = q
+    ? EMOJI_GROUPS.map((g) => ({
+        ...g,
+        emojis: g.emojis.filter((em) => em.k.includes(q) || em.e === q),
+      })).filter((g) => g.emojis.length > 0)
+    : EMOJI_GROUPS;
 
   const addEmoji = (emoji: string) => {
     setDraft((d) => d + emoji);
