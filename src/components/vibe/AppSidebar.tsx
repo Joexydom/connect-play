@@ -1,12 +1,14 @@
-import { Bell, ListMusic, LogOut, MessagesSquare, MonitorPlay, Phone } from "lucide-react";
+import { Bell, Film, ListMusic, LogOut, MessageCircle, MessagesSquare, MonitorPlay, Phone } from "lucide-react";
 import type { Profile } from "@/hooks/use-profile";
 import { cn } from "@/lib/utils";
 
-export type View = "watch" | "chats" | "playlists" | "calls";
+export type View = "watch" | "movies" | "chats" | "direct" | "playlists" | "calls";
 
 const navItems: { id: View; label: string; icon: typeof MonitorPlay }[] = [
   { id: "watch", label: "Watch", icon: MonitorPlay },
-  { id: "chats", label: "Chats", icon: MessagesSquare },
+  { id: "movies", label: "Movies", icon: Film },
+  { id: "chats", label: "Rooms", icon: MessagesSquare },
+  { id: "direct", label: "Messages", icon: MessageCircle },
   { id: "playlists", label: "Playlists", icon: ListMusic },
   { id: "calls", label: "Calls", icon: Phone },
 ];
