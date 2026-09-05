@@ -2,35 +2,12 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { Film, Loader2, Play, Search, Users } from "lucide-react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { searchMovies, type MovieResult } from "@/lib/movies.functions";
 
-interface Movie {
-  id: number;
-  title: string;
-  year: string;
-  genre: string;
-  poster: string;
-  preview?: string | undefined;
-  overview: string;
-}
+type Movie = MovieResult;
 
 const SUGGESTIONS = ["Dune", "Inception", "Spider-Man", "Interstellar", "Barbie", "Oppenheimer"];
-
-async function searchMovies(term: string): Promise<Movie[]> {
-  const res = await fetch(
-    `https://itunes.apple.com/search?media=movie&limit=24&term=${encodeURIComponent(term)}`,
-  );
-  if (!res.ok) throw new Error("search failed");
-  const json = (await res.json()) as { results: Record<string, unknown>[] };
-  return json.results.map((r) => ({
-    id: Number(r["trackId"]),
-    title: String(r["trackName"] ?? "Untitled"),
-    year: String(r["releaseDate"] ?? "").slice(0, 4),
-    genre: String(r["primaryGenreName"] ?? "Film"),
-    poster: String(r["artworkUrl100"] ?? "").replace("100x100bb", "600x600bb"),
-    preview: r["previewUrl"] ? String(r["previewUrl"]) : undefined,
-    overview: String(r["longDescription"] ?? r["shortDescription"] ?? ""),
-  }));
-}
 
 export function MoviesView({ onStartCall }: { onStartCall: () => void }) {
   const [term, setTerm] = useState("");
@@ -38,6 +15,7 @@ export function MoviesView({ onStartCall }: { onStartCall: () => void }) {
   const [results, setResults] = useState<Movie[]>([]);
   const [searched, setSearched] = useState(false);
   const [selected, setSelected] = useState<Movie | null>(null);
+  const runSearch = useServerFn(searchMovies);
 
   const run = async (q: string) => {
     const query = q.trim();
@@ -46,7 +24,7 @@ export function MoviesView({ onStartCall }: { onStartCall: () => void }) {
     setLoading(true);
     setSearched(true);
     try {
-      const movies = await searchMovies(query);
+      const movies = await runSearch({ data: { term: query } });
       setResults(movies);
       setSelected(movies[0] ?? null);
     } catch {
