@@ -7,8 +7,16 @@ export interface MovieResult {
   year: string;
   genre: string;
   poster: string;
-  preview: string;
+  link: string;
   overview: string;
+}
+
+interface WikiPage {
+  pageid: number;
+  title: string;
+  index?: number;
+  extract?: string;
+  thumbnail?: { source: string };
 }
 
 export const searchMovies = createServerFn({ method: "GET" })
@@ -16,18 +24,31 @@ export const searchMovies = createServerFn({ method: "GET" })
   .handler(async ({ data }): Promise<MovieResult[]> => {
     const term = data.term.trim();
     if (!term) return [];
-    const res = await fetch(
-      `https://itunes.apple.com/search?media=movie&limit=24&term=${encodeURIComponent(term)}`,
-    );
+    const url =
+      "https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*" +
+      "&generator=search&gsrlimit=20&prop=pageimages|extracts" +
+      "&piprop=thumbnail&pithumbsize=500&exintro=1&explaintext=1" +
+      `&gsrsearch=${encodeURIComponent(`${term} film`)}`;
+
+    const res = await fetch(url, { headers: { "User-Agent": "VibeApp/1.0" } });
     if (!res.ok) throw new Error("Movie search failed");
-    const json = (await res.json()) as { results?: Record<string, unknown>[] };
-    return (json.results ?? []).map((r) => ({
-      id: Number(r["trackId"] ?? Math.random() * 1e9),
-      title: String(r["trackName"] ?? "Untitled"),
-      year: String(r["releaseDate"] ?? "").slice(0, 4),
-      genre: String(r["primaryGenreName"] ?? "Film"),
-      poster: String(r["artworkUrl100"] ?? "").replace("100x100bb", "600x600bb"),
-      preview: String(r["previewUrl"] ?? ""),
-      overview: String(r["longDescription"] ?? r["shortDescription"] ?? ""),
-    }));
+    const json = (await res.json()) as { query?: { pages?: Record<string, WikiPage> } };
+    const pages = Object.values(json.query?.pages ?? {});
+
+    return pages
+      .sort((a, b) => (a.index ?? 99) - (b.index ?? 99))
+      .map((p) => {
+        const extract = p.extract ?? "";
+        const yearMatch = /\b(19|20)\d{2}\b/.exec(extract);
+        return {
+          id: p.pageid,
+          title: p.title,
+          year: yearMatch ? yearMatch[0] : "",
+          genre: /series|television/i.test(extract) ? "Series" : "Film",
+          poster: p.thumbnail?.source ?? "",
+          link: `https://en.wikipedia.org/?curid=${p.pageid}`,
+          overview: extract.slice(0, 400),
+        };
+      })
+      .filter((m) => m.overview.length > 0);
   });
