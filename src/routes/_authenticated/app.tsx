@@ -5,6 +5,8 @@ import { WatchView } from "@/components/vibe/WatchView";
 import { RoomsChatView } from "@/components/vibe/RoomsChatView";
 import { PlaylistsView } from "@/components/vibe/PlaylistsView";
 import { CallView } from "@/components/vibe/CallView";
+import { MoviesView } from "@/components/vibe/MoviesView";
+import { ChatsView } from "@/components/vibe/ChatsView";
 import { ChatPanel } from "@/components/vibe/ChatPanel";
 import { NotificationsPanel } from "@/components/vibe/NotificationsPanel";
 import { liveChatMessages, liveChatReplies, liveChatReplier } from "@/lib/vibe-data";
@@ -98,6 +100,10 @@ function VibeHome() {
       {view === "chats" && (
         <RoomsChatView userId={session.user.id} onStartCall={startCall} />
       )}
+
+      {view === "movies" && <MoviesView onStartCall={startCall} />}
+
+      {view === "direct" && <ChatsView onStartCall={startCall} />}
 
       {view === "playlists" && <PlaylistsView userId={session.user.id} />}
 
