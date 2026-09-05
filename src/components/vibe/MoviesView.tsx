@@ -9,7 +9,7 @@ interface Movie {
   year: string;
   genre: string;
   poster: string;
-  preview?: string;
+  preview?: string | undefined;
   overview: string;
 }
 
