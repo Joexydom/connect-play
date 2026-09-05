@@ -5,18 +5,63 @@ import type { ChatMessage } from "@/lib/vibe-data";
 import { MessageBubble, TypingIndicator } from "./MessageBubble";
 import { cn } from "@/lib/utils";
 
-const EMOJI_GROUPS: { label: string; emojis: string[] }[] = [
+type Emoji = { e: string; k: string };
+
+const EMOJI_GROUPS: { label: string; emojis: Emoji[] }[] = [
   {
     label: "Smileys",
-    emojis: ["😀", "😂", "🤣", "😊", "😍", "😘", "😎", "🤩", "😜", "🤔", "😴", "🥳", "😭", "😡", "🤯", "🙌"],
+    emojis: [
+      { e: "😀", k: "grin happy smile" },
+      { e: "😂", k: "laugh cry lol funny" },
+      { e: "🤣", k: "rofl laugh funny" },
+      { e: "😊", k: "smile blush happy" },
+      { e: "😍", k: "love heart eyes" },
+      { e: "😘", k: "kiss love" },
+      { e: "😎", k: "cool sunglasses" },
+      { e: "🤩", k: "star struck wow" },
+      { e: "😜", k: "wink tongue silly" },
+      { e: "🤔", k: "think hmm" },
+      { e: "😴", k: "sleep tired" },
+      { e: "🥳", k: "party celebrate" },
+      { e: "😭", k: "cry sad sob" },
+      { e: "😡", k: "angry mad" },
+      { e: "🤯", k: "mind blown shock" },
+      { e: "🙌", k: "hands praise yay" },
+    ],
   },
   {
     label: "Gestures",
-    emojis: ["👍", "👎", "👏", "🙏", "💪", "🤝", "✌️", "🤙", "👋", "🫶", "❤️", "🔥"],
+    emojis: [
+      { e: "👍", k: "thumbs up yes like" },
+      { e: "👎", k: "thumbs down no" },
+      { e: "👏", k: "clap applause" },
+      { e: "🙏", k: "pray thanks please" },
+      { e: "💪", k: "muscle strong" },
+      { e: "🤝", k: "handshake deal" },
+      { e: "✌️", k: "peace victory" },
+      { e: "🤙", k: "call me shaka" },
+      { e: "👋", k: "wave hi hello bye" },
+      { e: "🫶", k: "heart hands love" },
+      { e: "❤️", k: "heart love red" },
+      { e: "🔥", k: "fire lit hot" },
+    ],
   },
   {
     label: "Fun",
-    emojis: ["🎬", "🍿", "🎮", "🎧", "🎵", "⚽", "🍕", "☕", "🎉", "💯", "👀", "✨"],
+    emojis: [
+      { e: "🎬", k: "movie film clapper watch" },
+      { e: "🍿", k: "popcorn movie snack" },
+      { e: "🎮", k: "game gaming controller" },
+      { e: "🎧", k: "headphones music" },
+      { e: "🎵", k: "music note song" },
+      { e: "⚽", k: "soccer football ball" },
+      { e: "🍕", k: "pizza food" },
+      { e: "☕", k: "coffee drink" },
+      { e: "🎉", k: "party tada celebrate" },
+      { e: "💯", k: "hundred perfect" },
+      { e: "👀", k: "eyes look watch" },
+      { e: "✨", k: "sparkles shine" },
+    ],
   },
 ];
 
